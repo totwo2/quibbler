@@ -1,0 +1,200 @@
+/* ==========================================================================
+   report-newspaper.css —— 《唱唱反调》报纸版式
+   由 scripts/render_html.mjs 内联进 report.html。零外部字体、零网络请求。
+   基调：栏目名有报纸味，正文必须是高信息密度的可执行内容。
+   为了好看牺牲可读性 = 版式失败。
+   ========================================================================== */
+
+:root {
+  --ink: #1a1613;
+  --ink-soft: #4a4340;
+  --ink-faint: #8a8078;
+  --paper: #f6f2e9;
+  --paper-card: #fffdf8;
+  --rule: #cfc6b6;
+  --rule-strong: #2b2521;
+  --accent: #8c1c13;
+  --green: #1f7a3d;
+  --yellow: #9a6a00;
+  --red: #b4231a;
+  --shield: #1f5fa8;
+  --serif: "Noto Serif CJK SC", "Source Han Serif SC", "Songti SC", "SimSun", Georgia, "Times New Roman", serif;
+  --sans: "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+  --mono: "Cascadia Mono", "Consolas", "SFMono-Regular", "Menlo", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 32px 16px 72px;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 16px;
+  line-height: 1.75;
+  text-rendering: optimizeLegibility;
+}
+
+.paper {
+  max-width: 960px;
+  margin: 0 auto;
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  box-shadow: 0 2px 0 var(--rule), 0 18px 40px rgba(26, 22, 19, 0.08);
+  padding: 40px 48px 56px;
+}
+
+/* ── 报头 ────────────────────────────────────────────────────────────── */
+
+.paper > h1:first-of-type {
+  margin: 0 0 8px;
+  font-size: 2.4rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  border-bottom: 4px double var(--rule-strong);
+  padding-bottom: 14px;
+}
+
+h1, h2, h3, h4 { font-family: var(--serif); font-weight: 700; line-height: 1.35; }
+
+h2 {
+  margin: 44px 0 16px;
+  font-size: 1.45rem;
+  letter-spacing: 0.04em;
+  border-top: 2px solid var(--rule-strong);
+  border-bottom: 1px solid var(--rule);
+  padding: 10px 0;
+}
+
+h3 { margin: 28px 0 10px; font-size: 1.14rem; color: var(--ink); }
+h3::before { content: "▍"; color: var(--accent); margin-right: 6px; }
+h4 { margin: 20px 0 8px; font-size: 1rem; color: var(--ink-soft); }
+
+section.page { break-inside: avoid; }
+
+/* 头版头条：整版横跨，字号压过一切 */
+section.page h1 {
+  margin: 18px 0;
+  font-size: 2.05rem;
+  text-align: center;
+  letter-spacing: 0.03em;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  padding: 16px 0;
+}
+
+/* ── 正文 ────────────────────────────────────────────────────────────── */
+
+p { margin: 10px 0; }
+a { color: var(--accent); text-decoration: none; border-bottom: 1px dotted var(--accent); }
+a:hover { background: rgba(140, 28, 19, 0.07); }
+hr { border: 0; border-top: 1px solid var(--rule); margin: 32px 0; }
+
+ul { margin: 10px 0; padding-left: 1.3em; }
+li { margin: 4px 0; }
+li::marker { color: var(--accent); }
+
+blockquote {
+  margin: 14px 0;
+  padding: 10px 16px;
+  border-left: 3px solid var(--accent);
+  background: rgba(140, 28, 19, 0.04);
+  color: var(--ink-soft);
+  font-style: normal;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: rgba(26, 22, 19, 0.06);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+pre.block {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  background: #26211d;
+  color: #ece5da;
+  padding: 16px 18px;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+pre.block code { background: none; padding: 0; color: inherit; }
+
+/* ── 表格 ────────────────────────────────────────────────────────────── */
+
+.table-wrap { overflow-x: auto; margin: 16px 0; }
+table { border-collapse: collapse; width: 100%; font-family: var(--sans); font-size: 0.88rem; }
+thead th {
+  background: var(--rule-strong);
+  color: var(--paper);
+  text-align: left;
+  padding: 8px 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+tbody td { border-bottom: 1px solid var(--rule); padding: 8px 10px; vertical-align: top; }
+tbody tr:nth-child(even) { background: rgba(26, 22, 19, 0.025); }
+
+/* ── 证据标签与徽章 ──────────────────────────────────────────────────── */
+
+.ev { font-style: normal; }
+.ev-green { color: var(--green); }
+.ev-yellow { color: var(--yellow); }
+.ev-red { color: var(--red); }
+.ev-shield { color: var(--shield); }
+
+.badge {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 0.82em;
+  padding: 1px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+/* 尽责率低 = 红色告警（指控技能本身，必须让用户看见） */
+.badge-danger { background: rgba(180, 35, 26, 0.14); color: var(--red); font-weight: 700; }
+/* 真实执行率受限 = 灰色警示（指向环境，不是技能的错） */
+.badge-warn { background: rgba(154, 106, 0, 0.13); color: var(--yellow); }
+.badge-ok { background: rgba(31, 122, 61, 0.12); color: var(--green); }
+.badge-mute { background: rgba(26, 22, 19, 0.07); color: var(--ink-faint); }
+
+/* ── 情绪曲线 SVG ────────────────────────────────────────────────────── */
+
+figure.curve { margin: 18px 0; padding: 8px 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+figure.curve svg { width: 100%; height: auto; display: block; }
+figure.curve figcaption { font-family: var(--sans); font-size: 0.78rem; color: var(--ink-faint); text-align: center; padding-top: 4px; }
+.curve .line { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linejoin: round; stroke-linecap: round; }
+.curve .dot { fill: var(--paper-card); stroke: var(--accent); stroke-width: 2; }
+.curve .grid { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 3 4; }
+.curve .axis, .curve .tick { font-family: var(--sans); font-size: 11px; fill: var(--ink-faint); }
+.curve .score { font-family: var(--sans); font-size: 11px; font-weight: 700; fill: var(--accent); }
+
+/* ── 打印：双栏、去底色、展开链接 ────────────────────────────────────── */
+
+@media print {
+  body { background: #fff; padding: 0; font-size: 10.5pt; }
+  .paper { max-width: none; border: 0; box-shadow: none; padding: 0; }
+  section.page { column-count: 2; column-gap: 24px; column-rule: 1px solid var(--rule); }
+  section.page h1, section.page h2 { column-span: all; }
+  h2 { break-before: page; }
+  .table-wrap, figure.curve, pre.block, blockquote { break-inside: avoid; }
+  pre.block { background: #f2efe8; color: #1a1613; border: 1px solid var(--rule); }
+  thead th { background: #ddd6c8; color: #1a1613; }
+  a { color: inherit; border-bottom: 0; }
+  a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.75em; color: #666; }
+}
+
+/* ── 窄屏 ────────────────────────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+  body { padding: 12px 6px 40px; }
+  .paper { padding: 20px 16px 32px; }
+  .paper > h1:first-of-type { font-size: 1.6rem; }
+  section.page h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.15rem; }
+  table { font-size: 0.8rem; }
+}

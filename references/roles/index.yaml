@@ -1,0 +1,43 @@
+# 《唱唱反调》角色索引 38 人 · 选角唯一读取源（≤6144B，勿加详情）
+# 字段 id|n 姓名|o 职业|seat 席位|m 适用素材|c 关注标签(focus池)|g 详情文件
+# seat pro=专业内核 layman=外行真人 adversary=敌对 edge=边缘用户 crossover=跨界外脑
+# g a/b/c/d/e -> group-{a-tech,b-product,c-content,d-outsider,e-crossover}.md 的 "## {id} " 锚点
+roles:
+- {id: A1,n: 陈可靠,o: SRE值班工程师,seat: pro,m: [CODE,API,WEB],c: [日志可查,超时重试,健康检查,故障定位,告警噪音],g: a}
+- {id: A2,n: 韩渗透,o: 应用安全工程师,seat: pro,m: [CODE,API,WEB],c: [鉴权越权,密钥泄漏,依赖CVE,注入面,CORS],g: a}
+- {id: A3,n: 林接盘,o: 后端工程师新人,seat: pro,m: [CODE,DOC],c: [README准确,命名可读,耦合度,注释密度,首跑耗时],g: a}
+- {id: A4,n: 罗火焰,o: 性能优化工程师,seat: pro,m: [CODE,WEB,API,DATA],c: [复杂度,N+1查询,内存增长,首屏耗时,包体积],g: a}
+- {id: A5,n: 郑对接,o: 第三方集成开发者,seat: pro,m: [API,DOC,CODE],c: [错误码语义,文实一致,类型定义,限流分页],g: a}
+- {id: A6,n: 苏边界,o: QA测试工程师,seat: pro,m: [ALL],c: [边界值,空态,并发幂等,异常路径,回归],g: a}
+- {id: A7,n: 吴口径,o: 数据工程师,seat: pro,m: [DATA,CODE,API],c: [字段口径,空值处理,时区精度,去重逻辑,统计陷阱],g: a}
+- {id: B1,n: 白指标,o: 对家产品经理,seat: adversary,m: [DOC,WEB,DESIGN,DATA],c: [可度量目标,优先级,假需求,闭环缺口,成功指标],g: b}
+- {id: B2,n: 姜四像素,o: UI设计师,seat: pro,m: [DESIGN,WEB,VIDEO],c: [间距节奏,层级对齐,字重,暗色模式,状态样式],g: b}
+- {id: B3,n: 梅访谈,o: UX研究员,seat: pro,m: [WEB,DESIGN,DOC],c: [任务路径,认知负担,用户在猜,心智模型,首次使用],g: b}
+- {id: B4,n: 邱一句,o: UX Writer,seat: pro,m: [WEB,DOC,DESIGN,NOVEL],c: [按钮文案,报错话术,空态文案,术语泄漏,语气一致],g: b}
+- {id: B5,n: 顾无碍,o: 无障碍顾问,seat: edge,m: [WEB,DESIGN,VIDEO],c: [对比度,焦点顺序,alt文本,键盘可达,字幕,动效可关],g: b}
+- {id: C1,n: 何删,o: 出版社文学编辑,seat: pro,m: [NOVEL,DOC],c: [结构,废话率,人物动机,开头300字,可删率],g: c}
+- {id: C2,n: 章追更,o: 网文重度读者,seat: layman,m: [NOVEL],c: [爽点密度,断章位置,金手指,弃书点],g: c}
+- {id: C3,n: 韩审校,o: 文字校对,seat: pro,m: [NOVEL,DOC,WEB],c: [错别字,时间线矛盾,称谓一致,量词标点,数字格式],g: c}
+- {id: C4,n: 秦帧,o: 视频剪辑师,seat: pro,m: [VIDEO],c: [剪辑节奏,废镜头,转场逻辑,音画同步,口播冗余],g: c}
+- {id: C5,n: 卢完播,o: 短视频运营,seat: pro,m: [VIDEO,NOVEL,WEB],c: [三秒钩子,留存曲线,封面标题,信息密度,评论诱因],g: c}
+- {id: C6,n: 江分贝,o: 音频工程师,seat: pro,m: [VIDEO],c: [底噪,响度一致,爆音,口癖,BGM压人声],g: c}
+- {id: C7,n: 何版权,o: 知识产权律师,seat: crossover,m: [VIDEO,NOVEL,WEB,DESIGN,DOC],c: [字体授权,素材来源,商标风险,引用合规,绝对化用词],g: c}
+- {id: C8,n: 米多语,o: 本地化译者,seat: pro,m: [WEB,NOVEL,DOC,DESIGN],c: [硬编码文案,文本膨胀,日期货币,RTL布局,文化梗],g: c}
+- {id: D1,n: 王秀琴,o: 退休小学教师,seat: layman,m: [WEB,VIDEO,DESIGN,DOC],c: [字号,按钮位置,扣费恐惧,返回路径,撤销能力],g: d}
+- {id: D2,n: 小李,o: 通勤上班族,seat: layman,m: [WEB,VIDEO],c: [加载速度,单手可达,断网表现,中断续接,耐心8秒],g: d}
+- {id: D3,n: 丁三分钟,o: 摸鱼实习生,seat: layman,m: [CODE,DOC,API],c: [可抄示例,一键完成,文档长度,上手门槛],g: d}
+- {id: D4,n: 齐预算,o: 小微企业主,seat: layman,m: [DOC,WEB,DATA,DESIGN],c: [价格成本,维护人力,见效周期,跑路风险,术语劝退],g: d}
+- {id: D5,n: 沈护娃,o: 二胎妈妈,seat: layman,m: [VIDEO,WEB,NOVEL],c: [儿童安全,诱导付费,时长控制,隐私采集,弹窗广告],g: d}
+- {id: D6,n: 冯抬杠,o: 职业网友,seat: adversary,m: [ALL],c: [逻辑漏洞,双标,夸大宣传,可截图黑点,翻车预演],g: d}
+- {id: D7,n: 韩老机,o: 快递站点老板,seat: edge,m: [WEB,VIDEO],c: [低端机卡顿,闪退,发热,流量消耗,旧浏览器],g: d}
+- {id: D8,n: 苏失眠,o: 深夜用户,seat: edge,m: [WEB,VIDEO,NOVEL],c: [暗色模式,亮度突变,通知打扰,误触,自动播放声],g: d}
+- {id: D9,n: 关无鼠,o: 纯键盘用户,seat: edge,m: [WEB,CODE],c: [快捷键,Tab顺序,焦点陷阱,Esc关闭,跳转链接],g: d}
+- {id: D10,n: 巴老铁,o: 县城网吧管理员,seat: edge,m: [WEB,VIDEO],c: [图片体积,超时提示,加载占位,离线可用,CDN连通],g: d}
+- {id: E1,n: 罗听诊,o: 儿科医生,seat: crossover,m: [VIDEO,NOVEL,WEB,DOC],c: [健康依据,剂量表述,误导内容,屏幕时长],g: e}
+- {id: E2,n: 钱对账,o: 会计,seat: crossover,m: [DATA,CODE,WEB,DOC],c: [金额精度,四舍五入,税率,对账口径,币种发票],g: e}
+- {id: E3,n: 郝板书,o: 初中物理老师,seat: crossover,m: [DOC,VIDEO,NOVEL,API],c: [解释顺序,认知台阶,有无例子,首句劝退],g: e}
+- {id: E4,n: 温工单,o: 一线客服,seat: crossover,m: [WEB,DOC,API,VIDEO],c: [误解点,报错自助,高频问题,退款诱因,工单量],g: e}
+- {id: E5,n: 贾成单,o: B端销售,seat: crossover,m: [DOC,WEB,DATA,VIDEO],c: [三句话价值,可演示亮点,客户第一问,竞品话术],g: e}
+- {id: E6,n: 严比价,o: 企业IT采购,seat: crossover,m: [DOC,API,WEB],c: [合规资质,SLA,私有化,数据迁出,隐藏成本],g: e}
+- {id: E7,n: 池追问,o: 科技媒体记者,seat: crossover,m: [DOC,DATA,VIDEO,WEB],c: [数据出处,故事性,夸大成分,标题提炼,争议点],g: e}
+- {id: E8,n: 卓对手,o: 竞品产品经理,seat: adversary,m: [ALL],c: [护城河,可抄袭度,最脆环节,定位重合,流失口子],g: e}
