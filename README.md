@@ -34,6 +34,65 @@ Zero dependencies — Node 22+ built-in modules only.
 /quibbler --html ./project        # + newspaper-style HTML
 ```
 
+Natural-language triggers also work:
+
+```
+"Quibbler, take a look at ./my-repo"
+"Review this repo as if a new hire were picking it up"
+"Will this video get flamed if posted?"
+```
+
+## Flags
+
+| Flag | Effect |
+|---|---|
+| `--lite` | 3 personas + concise report |
+| `--full` | 7 personas |
+| `--yes` | Skip the cost disclosure confirmation before dispatch |
+| `--html` | Also render a newspaper-style HTML report |
+| `--roles A1,D6` | Force specific personas |
+| `--out <dir>` | Override the default report directory |
+
+## Output
+
+```
+{cwd}/.workbuddy/quibbler-reports/{material}-{date}/
+├── report.md      # 9-section newspaper-style report
+├── report.html    # optional
+├── meta.json
+├── evidence/{role-id}/   # screenshots, logs, command output
+└── roles/{role-id}.md    # each persona's full raw experience log
+```
+
+> It is recommended to add `.workbuddy/` to your `.gitignore`. The skill only warns — it will **never modify your files**.
+
+## Script self-test
+
+```bash
+node scripts/preflight.mjs --pretty
+node scripts/inspect_material.mjs "<path-or-url>" --pretty
+node scripts/init_workspace.mjs --name "My Project" --roles A3,B5 --pretty
+```
+
+All three scripts support `--help`, print exactly one JSON to stdout, diagnostics go to stderr, exit code `0` pass / `1` business-fail / `2` runtime error.
+
+> ⚠️ When running pipeline tests, `init_workspace.mjs` must explicitly pass `--cwd <tmp-dir>` or `--out <tmp-dir>`, otherwise artifacts land in the current directory — the skill package was once polluted by a leftover `.workbuddy/`.
+
+## Known limitations
+
+- **Missing ffmpeg** → on VIDEO material the skill auto-tries to install it (`winget install Gyan.FFmpeg`, then scoop/choco on failure); once installed it works normally, otherwise it degrades with a 🔴 marker. Manual install also fine: `winget install Gyan.FFmpeg`
+- `agent-browser` can only detect whether the CLI exists, not whether the browser can actually launch; subagents self-degrade to 🔴 when their first call fails
+- Persona experiences in a single run are **isolated from each other** — personas never reference each other's views. This is intentional; conflicts are left to the report's dispute section
+- No auto code-fixing, no scoring/ranking, no positive marketing copy, no historical baseline tracking
+- Large L-tier materials are not auto-chunked in v1; coverage relies on focus zones naturally splitting the surface
+- Re-running the same material currently only detects and warns; incremental diff experience is not yet implemented
+
+## Design principles
+
+- **Judgment belongs to the model, counting belongs to the script**: `scripts/*.mjs` only does things that are countable and falsifiable by the filesystem; type-classification, role-casting, and clustering are delegated to Agent semantic execution in `references/`
+- **Evidence is the foundation**: `verify_report.mjs` cross-checks every artifact the report claims actually exists. Can't fabricate a file, can't fabricate a 🟢
+- **Zero-copy**: `evidence/{role-id}/` is pre-created before dispatch; subagents write directly to the agreed paths
+
 ## License
 
 MIT
@@ -47,6 +106,12 @@ MIT
 一台**人群模拟器**。把你的东西丢进去，它替你请来一屋子性格迥异的真人 —— 一个一个用完、看完、读完，然后当面告诉你哪儿不行。
 
 不是让模型看一眼点评两句，而是**真跑代码、真开浏览器、真读完全文**，每条结论都挂着可核对的证据。
+
+## 它能做什么
+
+对你的素材自动判型，从 38 个职业角色库里选出 5-7 个，派成并发的子代理**真正去体验**（跑代码、开网页、读全文），最后汇总成一份报纸式批判报告：共识、争鸣、致命伤、按优先级排列的修改清单。
+
+支持 8 类素材：`CODE` 代码 · `WEB` 网页 · `VIDEO` 视频 · `NOVEL` 小说长文 · `DOC` 文档PRD · `DESIGN` 设计稿 · `API` 接口SDK · `DATA` 数据报表。可组合（"带前端的开源仓库" = CODE + WEB）。
 
 ## 安装
 
@@ -68,8 +133,6 @@ skillhub install quibbler --namespace user_c18b02ff
 这个视频发出去会被喷吗
 /quibbler --lite ./demo
 ```
-
-支持 8 类素材：`CODE` 代码 · `WEB` 网页 · `VIDEO` 视频 · `NOVEL` 小说长文 · `DOC` 文档PRD · `DESIGN` 设计稿 · `API` 接口SDK · `DATA` 数据报表。可组合（"带前端的开源仓库" = CODE + WEB）。
 
 ## 开关
 
@@ -121,3 +184,7 @@ node scripts/init_workspace.mjs --name "我的 项目" --roles A3,B5 --pretty
 - **判定权归模型，计数权归脚本**：`scripts/*.mjs` 只做数得清、能被文件系统证伪的事；判型、选角、聚类全在 `references/` 里交给 Agent 语义执行
 - **证据是地基**：`verify_report.mjs` 会逐个核对报告声明的 artifact 是否真实存在。编不出文件就编不出 🟢
 - **零搬运**：`evidence/{角色id}/` 在派发前预建，子代理直接写约定路径
+
+## License
+
+MIT
