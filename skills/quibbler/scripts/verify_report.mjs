@@ -25,7 +25,7 @@
  * 设计纪律：脚本里**不允许**出现 `if (roleId === 'A3')` 这类语义分支。
  * 一切「这条该不该算」的判断都由数据字段（cause / seat / level）驱动，判断归模型，算术归脚本。
  *
- * 零 npm 依赖，仅用 node: 内置模块。Node ≥18 ESM。用 PATH 上的 node，不写死版本路径。
+ * 零 npm 依赖，仅用 node: 内置模块。Node ≥22 ESM。用 PATH 上的 node，不写死版本路径。
  */
 
 import fs from 'node:fs';

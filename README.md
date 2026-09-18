@@ -1,190 +1,143 @@
-# THE QUIBBLER
+# 唱唱反调 · The Quibbler
 
-A **persona simulator**. Throw your stuff in — it brings in a roomful of 5-7 real people with different jobs, who actually use, watch, or read your material end-to-end, then tell you to your face what's wrong.
+[English](README_EN.md)
 
-Not a quick glance and a comment. It **runs the code, opens the browser, reads the full text** — every claim backed by verifiable evidence.
+**给发布前的开发者：让 5–7 位由 AI 扮演、职业完全不同的体验者，真跑一遍你的代码 / 网页 / 长文，交回一份每条结论都能对上文件的批判报告。**
 
-[中文说明见下方](#中文说明)
+> 你的仓库没人跑过。你的页面没人翻到底。你的视频没人看完过。
+> 发布之前，你是唯一的测试用户。
 
----
+唱唱反调替你请来 5–7 位由 AI 扮演、职业完全不同的体验者 —— 后端新人、QA 工程师、退休小学老师、对家产品经理 —— 他们**真的把你的代码跑起来、真的打开你的页面、真的把你的长文读完**，然后当面告诉你哪儿不行，交给你一份报告：哪些是共识、哪里有分歧、哪几条是致命伤、先修哪一个。
 
-## What it does
+不是一个模型扫一眼写两句点评：是 5–7 个互不通气的 AI 角色各自真跑真读，报告里每一条 🟢（经脚本核实）结论都挂着一个文件路径，有脚本逐条核对那个文件是否真的躺在磁盘上。
 
-Classifies your material, casts 5-7 occupational personas from a 38-role library, dispatches them as concurrent subagents that actually experience the material (run the code, browse the page, read the text), then synthesizes a newspaper-style critical review with consensus, disputes, fatal flaws, and a prioritized fix list.
+装进 AI 编程助手的技能 · 零 npm 依赖 · Node 22+ · **只读，不改你一个字节** · MIT
 
-Supports 8 material types: `CODE` · `WEB` · `VIDEO` · `NOVEL` · `DOC` · `DESIGN` · `API` · `DATA` (combinable).
+## 你本来得自己做的六件事
 
-## Install
-
-```bash
-# From GitHub Agent Skills
-gh skill install {owner} quibbler
-
-# From SkillHub (CN)
-skillhub install quibbler --namespace user_c18b02ff
-```
-
-Zero dependencies — Node 22+ built-in modules only.
-
-## Usage
-
-```
-/quibbler --lite ./my-repo       # 3 personas, concise report
-/quibbler --full ./demo           # 7 personas, full report
-/quibbler --html ./project        # + newspaper-style HTML
-```
-
-Natural-language triggers also work:
-
-```
-"Quibbler, take a look at ./my-repo"
-"Review this repo as if a new hire were picking it up"
-"Will this video get flamed if posted?"
-```
-
-## Flags
-
-| Flag | Effect |
+| 你本来得亲手做 | 它替你做 |
 |---|---|
-| `--lite` | 3 personas + concise report |
-| `--full` | 7 personas |
-| `--yes` | Skip the cost disclosure confirmation before dispatch |
-| `--html` | Also render a newspaper-style HTML report |
-| `--roles A1,D6` | Force specific personas |
-| `--out <dir>` | Override the default report directory |
+| 判断这是什么素材、该找谁来看 | 按 8 类素材自动判型，从 38 人职业角色库里挑 5–7 人 |
+| 一个个约人、逐个讲清楚该看什么 | 在同一条消息里并发派发，几位体验者互不串供 |
+| 盯着他们真的打开、真的跑起来 | 真跑代码、真开浏览器、真读完；机器做不到的标 🔴，不冒充做过 |
+| 收一堆零散意见，判断哪条才是真问题 | 共识要求 ≥2 人独立提及；分歧配对列出，不做平均 |
+| 把意见整理成能动手的清单 | 报纸式报告：致命伤、被低估的亮点、P0/P1/P2 修复清单 |
+| 相信"我朋友说还行"这种没法核对的反馈 | 每条 🟢 结论的产物路径都被脚本核对过 |
 
-## Output
-
-```
-{cwd}/.workbuddy/quibbler-reports/{material}-{date}/
-├── report.md      # 9-section newspaper-style report
-├── report.html    # optional
-├── meta.json
-├── evidence/{role-id}/   # screenshots, logs, command output
-└── roles/{role-id}.md    # each persona's full raw experience log
-```
-
-> It is recommended to add `.workbuddy/` to your `.gitignore`. The skill only warns — it will **never modify your files**.
-
-## Script self-test
+**6 道工序 → 1 条命令：**
 
 ```bash
-node scripts/preflight.mjs --pretty
-node scripts/inspect_material.mjs "<path-or-url>" --pretty
-node scripts/init_workspace.mjs --name "My Project" --roles A3,B5 --pretty
+/quibbler --lite ./your-project
 ```
-
-All three scripts support `--help`, print exactly one JSON to stdout, diagnostics go to stderr, exit code `0` pass / `1` business-fail / `2` runtime error.
-
-> ⚠️ When running pipeline tests, `init_workspace.mjs` must explicitly pass `--cwd <tmp-dir>` or `--out <tmp-dir>`, otherwise artifacts land in the current directory — the skill package was once polluted by a leftover `.workbuddy/`.
-
-## Known limitations
-
-- **Missing ffmpeg** → on VIDEO material the skill auto-tries to install it (`winget install Gyan.FFmpeg`, then scoop/choco on failure); once installed it works normally, otherwise it degrades with a 🔴 marker. Manual install also fine: `winget install Gyan.FFmpeg`
-- `agent-browser` can only detect whether the CLI exists, not whether the browser can actually launch; subagents self-degrade to 🔴 when their first call fails
-- Persona experiences in a single run are **isolated from each other** — personas never reference each other's views. This is intentional; conflicts are left to the report's dispute section
-- No auto code-fixing, no scoring/ranking, no positive marketing copy, no historical baseline tracking
-- Large L-tier materials are not auto-chunked in v1; coverage relies on focus zones naturally splitting the surface
-- Re-running the same material currently only detects and warns; incremental diff experience is not yet implemented
-
-## Design principles
-
-- **Judgment belongs to the model, counting belongs to the script**: `scripts/*.mjs` only does things that are countable and falsifiable by the filesystem; type-classification, role-casting, and clustering are delegated to Agent semantic execution in `references/`
-- **Evidence is the foundation**: `verify_report.mjs` cross-checks every artifact the report claims actually exists. Can't fabricate a file, can't fabricate a 🟢
-- **Zero-copy**: `evidence/{role-id}/` is pre-created before dispatch; subagents write directly to the agreed paths
-
-## License
-
-MIT
-
----
-
-## 中文说明
-
-# 《唱唱反调》THE QUIBBLER
-
-一台**人群模拟器**。把你的东西丢进去，它替你请来一屋子性格迥异的真人 —— 一个一个用完、看完、读完，然后当面告诉你哪儿不行。
-
-不是让模型看一眼点评两句，而是**真跑代码、真开浏览器、真读完全文**，每条结论都挂着可核对的证据。
-
-## 它能做什么
-
-对你的素材自动判型，从 38 个职业角色库里选出 5-7 个，派成并发的子代理**真正去体验**（跑代码、开网页、读全文），最后汇总成一份报纸式批判报告：共识、争鸣、致命伤、按优先级排列的修改清单。
-
-支持 8 类素材：`CODE` 代码 · `WEB` 网页 · `VIDEO` 视频 · `NOVEL` 小说长文 · `DOC` 文档PRD · `DESIGN` 设计稿 · `API` 接口SDK · `DATA` 数据报表。可组合（"带前端的开源仓库" = CODE + WEB）。
 
 ## 安装
 
 ```bash
-# GitHub Agent Skills
-gh skill install {owner} quibbler
-
-# SkillHub (国内)
-skillhub install quibbler --namespace user_c18b02ff
+gh skill install totwo2 quibbler
 ```
 
-零依赖，仅需 Node 22+。
+SkillHub（国内）：https://skillhub.cn/skills/quibbler · 当前版本 **v1.1.1**
 
 ## 用法
+
+```bash
+/quibbler --lite ./my-repo     # 3 位 + 精简报告
+/quibbler --full ./my-repo     # 7 位
+/quibbler --html ./my-repo     # 额外输出报纸样式 HTML
+```
+
+也可以直接用人话喊它：
 
 ```
 唱唱反调，看看 ./my-repo
 帮我把这个仓库当新人接手一遍
 这个视频发出去会被喷吗
-/quibbler --lite ./demo
 ```
-
-## 开关
 
 | 开关 | 作用 |
 |---|---|
-| `--lite` | 3 角色 + 精简报告 |
-| `--full` | 7 角色 |
-| `--yes` | 跳过派发前的成本公示确认 |
-| `--html` | 额外渲染报纸样式 HTML |
+| `--lite` | 3 位 + 精简报告 |
+| `--full` | 7 位 |
+| `--yes` | 跳过开印前的阵容确认 |
+| `--html` | 额外渲染 `report.html` |
 | `--roles A1,D6` | 强制指定角色 |
 | `--out <dir>` | 覆盖默认报告目录 |
 
-## 产物
+## 装完怎么确认生效
 
-```
-{cwd}/.workbuddy/quibbler-reports/{素材名}-{日期}/
-├── report.md      # 9 版面报纸式报告
-├── report.html    # 可选
-├── meta.json
-├── evidence/{角色id}/   # 截图、日志、命令输出
-└── roles/{角色id}.md    # 每人的完整原始体验日志
-```
-
-> 建议在 `.gitignore` 里加一行 `.workbuddy/`。技能只会提示，**不会替你改文件**。
-
-## 脚本自测
+跑一次精简版，看东西有没有落地：
 
 ```bash
-node scripts/preflight.mjs --pretty
-node scripts/inspect_material.mjs "<路径或URL>" --pretty
-node scripts/init_workspace.mjs --name "我的 项目" --roles A3,B5 --pretty
+/quibbler --lite ./your-project && ls .quibbler/reports/
 ```
 
-三个脚本都支持 `--help`，输出唯一一个 JSON 到 stdout，诊断走 stderr，退出码 `0` 通过 / `1` 业务不合格 / `2` 运行错误。
+看到 `<素材名>-<日期>/report.md` 生成，就是生效了。打开报告先看报头那三个数字——它们是 `skills/quibbler/scripts/verify_report.mjs` 回填的机器值，不是模型手写的估算。环境缺什么（比如视频素材缺 ffmpeg），报告里对应条目会标 🔴 并写明原因，不会假装做过。
 
-> ⚠️ 跑链路测试时，`init_workspace.mjs` 必须显式带 `--cwd <临时目录>` 或 `--out <临时目录>`，否则产物会落在当前目录——技能包曾因此被 `.workbuddy/` 残留污染过。
+## 能拿到什么
+
+```
+.quibbler/reports/{素材名}-{日期}/
+├── report.md      # 报告正文
+├── report.html    # 加 --html 才有
+├── meta.json      # 素材名/slug/来源、本期阵容、环境探测结果
+├── evidence/{角色id}/   # 截图、日志、命令输出
+└── roles/{角色id}.md    # 每位体验者的完整原始日志
+```
+
+开印之前会先给你一张阵容卡，等你说"开"（**下例是示意，不是某次真实运行**）：
+
+```
+📰 《唱唱反调》即将开印
+
+素材：my-repo（CODE + WEB，M 档，18,422 行）
+本期阵容（6 位）：
+  · A3 林接盘  后端新人      专业内核席 —— 你这仓库最先接手的人就是他
+  · A2 韩渗透  应用安全      专业内核席 —— 有 .env 和外部接口，必须过一遍
+  · A6 苏边界  QA            专业内核席 —— 边界与异常路径
+  · D3 丁三分钟 摸鱼实习生    外行真人席 —— 测"抄不抄得动"
+  · B5 顾无碍  无障碍顾问     边缘用户席 —— dist/ 里有前端，键盘与读屏必查
+  · E8 卓对手  竞品 PM        敌 对 席 —— 预演"这东西多久能被抄完"
+环境：ffmpeg 缺失（本次不涉及视频，无影响）
+预计：10–15 分钟，约 6 个子代理 × 12 次工具调用
+产物：.quibbler/reports/my-repo-2026-08-07/
+
+开印吗？
+```
+
+报告按报纸排版，报头之外固定 9 个版面：
+
+| 版面 | 装什么 |
+|---|---|
+| 🗞 头版头条 | 这是个什么，以及它最大的问题 |
+| ⚰️ 讣告版 · 致命伤 | 会直接判死刑的那几条 |
+| 📢 社论 · 众口一词 | 共识 —— 要求 ≥2 人独立提及 |
+| ⚔️ 争鸣版 · 唱唱反调 | 他们分歧在哪 |
+| ✉️ 读者来信 | 每个人的第一人称即时反应 |
+| 💎 遗珠版 · 被低估的亮点 | 每人至少交 1 条你没当回事的亮点 |
+| 🌡 天气预报 · 风险预测 | 上线之后会出什么事 |
+| 📋 分类广告栏 · 急聘修复 | 修复清单，P0/P1/P2 |
+| ⚖️ 更正与声明 | 哪些没测成，如实登记 |
+
+报头那几个数字——真实执行率、尽责率、覆盖度——由 `skills/quibbler/scripts/verify_report.mjs` 写进去，模型不许手填。推演级的条目进不了 P0 修复清单；尽责率低于 85%，这次运行直接判不通过；凭据一旦进了报告，交付立即中止。
 
 ## 已知限制
 
-- **ffmpeg 本机缺失** → 遇到 VIDEO 素材时技能会自动尝试安装（`winget install Gyan.FFmpeg`，失败再试 scoop/choco），装好即正常体验；装不上才降级标 🔴。手动装也行：`winget install Gyan.FFmpeg`
-- `agent-browser` 只能探测 CLI 是否存在，探不出浏览器能否真的启动；子代理首次调用失败时自行降级 🔴
-- 单次运行的角色体验**互相隔离**，角色不会引用彼此观点 —— 这是刻意的，冲突留给报告的争鸣版
-- 不做代码自动修复、不做打分排名、不做正向营销文案、不维护历史基线
-- L 档大素材 v1 不做自动分段，靠 focus 分区自然错开覆盖面
-- 同素材重跑目前只做检测与提示，增量 diff 体验尚未实现
+- **视频素材需要 ffmpeg。** 缺了会自动尝试安装（`winget install Gyan.FFmpeg`，失败再试 scoop/choco）。装不上，视频角色的条目会按纯推演标 🔴，真实执行率如实下降，不美化。
+- **`agent-browser` 只能探测 CLI 在不在**，探不出浏览器能不能真的启动。角色首次调用失败会自行降级标 🔴。
+- **同一次运行里几位体验者互相隔离**，不引用彼此观点。冲突留给报告的争鸣版处理。
+- **几万行以上的超大素材不做自动分段**，靠互不重叠的关注点分区错开覆盖面。
+- **同一素材重跑目前只做检测与提示**，增量对比尚未实现。
+- **只诊断不动手。** 不做代码自动修复、不做打分排名、不写正向宣传文案、不维护历史基线。
+- **一次运行要花时间和子代理调用。** 开印前的阵容卡会先把这笔开销摆给你看。
 
-## 设计原则
+## 它是怎么做的
 
-- **判定权归模型，计数权归脚本**：`scripts/*.mjs` 只做数得清、能被文件系统证伪的事；判型、选角、聚类全在 `references/` 里交给 Agent 语义执行
-- **证据是地基**：`verify_report.mjs` 会逐个核对报告声明的 artifact 是否真实存在。编不出文件就编不出 🟢
-- **零搬运**：`evidence/{角色id}/` 在派发前预建，子代理直接写约定路径
+- **判定权归模型，计数权归脚本。** `skills/quibbler/scripts/*.mjs` 只做能被文件系统证伪的事：什么存在、什么缺失、什么在这台机器上跑不了。判型、选角、聚类交给读 `skills/quibbler/references/` 的主 Agent 做。
+- **证据是地基。** `verify_report.mjs` 会把报告声明的每个产物路径走一遍，核对是否真实存在。编不出文件，就编不出 🟢。
+- **6 道工序不跳步。** 护栏与意图解析 → 双探针 → 判型与选角 → 成本公示 → 建工作区与并发派发 → 合成出报。
+- **14 份参考文档按需加载。** 角色库共 38 人分 5 组，只读命中素材类型的那几组。
+- **零搬运。** `evidence/{角色id}/` 在派发前预建，体验者直接往约定路径写。
 
-## License
+建议在 `.gitignore` 里加一行 `.quibbler/`；技能只会提示，不会替你改文件。
 
-MIT
+License: MIT

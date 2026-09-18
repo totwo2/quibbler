@@ -37,16 +37,16 @@ const TOOL_SPECS = [
     key: 'node',
     candidates: ['node'],
     versionArgs: ['--version'],
-    workbuddyKind: 'node',
-    workbuddyExe: ['node.exe', 'node'],
+    platformKind: 'node',
+    platformExe: ['node.exe', 'node'],
     hard: true,
   },
   {
     key: 'python',
     candidates: ['python', 'python3'],
     versionArgs: ['--version'],
-    workbuddyKind: 'python',
-    workbuddyExe: ['python.exe', 'python3.exe', 'python3', 'python'],
+    platformKind: 'python',
+    platformExe: ['python.exe', 'python3.exe', 'python3', 'python'],
     hard: false,
   },
   { key: 'ffmpeg', candidates: ['ffmpeg'], versionArgs: ['-version'], hard: false },
@@ -114,12 +114,12 @@ function whichSync(cmd) {
 }
 
 /**
- * 在 WorkBuddy 自带 binaries 目录中查找运行时（版本号倒序取最新）。
+ * 在宿主平台自带的 binaries 目录中查找运行时（版本号倒序取最新）。
  * @param {string} kind 'node' | 'python'
  * @param {string[]} exeNames 候选可执行文件名
  * @returns {string|null}
  */
-function findWorkbuddyBinary(kind, exeNames) {
+function findPlatformBinary(kind, exeNames) {
   const base = path.join(os.homedir(), '.workbuddy', 'binaries', kind, 'versions');
   let versions = [];
   try {
@@ -176,8 +176,8 @@ function probeTool(spec) {
     exe = whichSync(name);
     if (exe) break;
   }
-  if (!exe && spec.workbuddyKind) {
-    exe = findWorkbuddyBinary(spec.workbuddyKind, spec.workbuddyExe || []);
+  if (!exe && spec.platformKind) {
+    exe = findPlatformBinary(spec.platformKind, spec.platformExe || []);
   }
   if (!exe) return { available: false, exe: null, version: null };
   return { available: true, exe, version: readVersion(exe, spec.versionArgs) };

@@ -2,18 +2,36 @@
 name: quibbler
 slug: quibbler
 displayName: 唱唱反调 The Quibbler
-summary: 人群模拟器 — 5-7 个职业角色真体验素材后合成报纸感锐评报告，防子代理摸鱼。
-description: This skill should be used when the user wants a multi-persona deep-experience critique of an artifact — a code repository, web page, video, novel or long-form text, PRD/document, design mockup, API/SDK, or data report. It classifies the material, casts 5-7 occupational personas from a built-in 38-role library, dispatches them as concurrent subagents that actually run the code, open the page in a real browser, or read the text end-to-end, and then synthesizes a newspaper-style critical review with consensus, disputes, fatal flaws, and a prioritized fix list. Trigger on "唱唱反调", "quibbler", "深度体验", "多角色评审", "找人试试", "模拟用户", "会被喷吗", "挑刺", "找茬", "体验报告", "多视角审查", "roast my project", "critique this", "multi-persona review", "find the flaws", "red team", or "/quibbler". Do not use for simple explanation, code modification, or requests for positive marketing copy.
+summary: 把代码仓库、网页、视频或长文交给它，5-7 位由 AI 扮演、职业完全不同的体验者真跑一遍、真读完一遍，交回一份报纸式的批判报告和按优先级排好的修复清单。
+description: 把你的代码仓库、网页、视频或长文交给它，它请 5-7 位由 AI 扮演、职业完全不同的体验者真跑、真开、真读完，交回一份报纸式批判报告：共识、分歧、致命伤，和按优先级排好的修复清单。每条结论都挂着可核对证据文件，编不出文件就编不出 🟢。只诊断不动手，不改你的代码。不适用：只想解释代码、要改代码、或听好话。触发词：唱唱反调、quibbler、深度体验、多角色评审、找人试试、模拟用户、会被喷吗、挑刺。
 agent_created: true
-version: 1.0.0
+version: 1.1.1
 license: MIT
-tags: [review, critique, persona, quibbler, 唱唱反调]
+topics:
+  - ai
+  - llm
+  - agent
+  - agent-skills
+  - ai-agents
+  - multi-agent
+  - prompt-engineering
+  - code-review
+  - code-quality
+  - design-review
+  - red-team
+  - adversarial-testing
+  - usability
+  - ux
+  - accessibility
+  - browser-automation
+  - qa
+  - user-testing
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Skill, Agent
 ---
 
 # 《唱唱反调》THE QUIBBLER
 
-一台**人群模拟器**：把东西丢进去，它替你请来一屋子性格迥异的真人，一个一个用完、看完、读完，然后当面告诉你哪儿不行。
+一台**人群模拟器**：把东西丢进去，它替你请来一屋子由 AI 扮演、性格迥异的体验者，一个一个用完、看完、读完，然后当面告诉你哪儿不行。
 
 ## 三条锁定决策（不再讨论）
 
@@ -23,7 +41,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Skill, 
 
 ---
 
-## 1. 何时用 / 何时不用
+## 1. 怎么用 / 什么时候别用
 
 ### 1.1 应当触发（S 系列）
 
@@ -62,7 +80,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Skill, 
 
 | 开关 | 作用 |
 |---|---|
-| `--lite` | 3 角色 + 精简报告（专业 1 + 外行 1 + 敌对 1） |
+| `--lite` | 3 角色 + 精简报告（专业 1 + 敌对 1 + 边缘 1） |
 | `--full` | 7 角色 |
 | `--yes` / `--no-confirm` | 跳过派发前的成本公示确认 |
 | `--html` | 额外渲染报纸样式 `report.html` |
@@ -76,7 +94,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Skill, 
 ## 3. 六阶段主流程
 
 > 每阶段固定三件事：**做什么 → 读哪个 reference → 跑哪个脚本**。不要跳阶段。
-> 脚本走系统 `node`（`preflight.mjs` 探测缺失并回显 `node_path`）；必要时回退 WorkBuddy 自带运行时，内部均用 `node:` 内置模块，不写死版本路径。
+> 脚本走系统 `node`（`preflight.mjs` 探测缺失并回显 `node_path`）；必要时回退宿主平台自带运行时，内部均用 `node:` 内置模块，不写死版本路径。
 > 所有传给 Bash 的路径**必须双引号包裹**。
 
 ### 阶段 0 · 护栏与意图解析
@@ -149,7 +167,7 @@ node "scripts/preflight.mjs" --out "<系统临时目录>/quibbler-envprobe-<时�
   · E8 卓对手  竞品 PM        敌 对 席 —— 预演"这东西多久能被抄完"
 环境：ffmpeg 缺失（本次不涉及视频，无影响）
 预计：10–15 分钟，约 6 个子代理 × 12 次工具调用
-产物：.workbuddy/quibbler-reports/my-repo-2026-08-07/
+产物：.quibbler/reports/my-repo-2026-08-07/
 
 开印吗？（回复"开"或调整阵容；下次可用 --yes 跳过本确认）
 ```
@@ -204,7 +222,7 @@ node "scripts/init_workspace.mjs" --name "<素材名>" --material "<绝对路径
 4. 体检：
 
 ```bash
-node "scripts/verify_report.mjs" "<workspace>" --secrets-from-stdin
+node "scripts/verify_report.mjs" "<workspace>" --secrets-from-stdin --write-back
 ```
 
 退出码 `0` 通过 / `1` 有违规 / `2` 运行错误。有违规 → 逐条改 `report.md` 后重跑，**最多 2 轮**。
@@ -277,10 +295,10 @@ node "scripts/verify_report.mjs" "<workspace>" --secrets-from-stdin
 ## 7. 落盘与清理
 
 ```
-{cwd}/.workbuddy/quibbler-reports/{material-slug}-{YYYY-MM-DD}[-{n}]/
+{cwd}/.quibbler/reports/{material-slug}-{YYYY-MM-DD}[-{n}]/
 ├── report.md          # 9 版面主报告
 ├── report.html        # 可选，--html
-├── meta.json          # 素材指纹、阵容、环境探针、时间戳
+├── meta.json          # 素材名/slug/来源、阵容、环境探针、时间戳
 ├── evidence/
 │   ├── INDEX.md       # verify_report.mjs 生成
 │   └── {ROLE_ID}/{NN}-{slug}.{ext}
@@ -289,7 +307,7 @@ node "scripts/verify_report.mjs" "<workspace>" --secrets-from-stdin
 
 - **slug**：剔除 `<>:"/\|?*` 与控制字符，空格→`-`，保留中文，截断 40 字符，空则用 `material`。
 - **同日冲突**：追加 `-2`、`-3`。
-- **`.gitignore`**：`init_workspace.mjs` 检测到 cwd 是 git 仓库且 `.workbuddy/` 未被忽略 → 把提示原样转达用户，**不替用户改文件**。
+- **`.gitignore`**：`init_workspace.mjs` 检测到 cwd 是 git 仓库且 `.quibbler/` 未被忽略 → 把提示原样转达用户，**不替用户改文件**。
 - **证据命名**：`evidence/{ROLE_ID}/{NN}-{slug}.{ext}`，`NN` 从 `01` 起两位补零。
 - **报告内引用**：一律相对 `report.md` 的相对路径，用 `/` 分隔。
 - **时间**：体验日志内用相对时间 `mm:ss`；meta.json 用 ISO 8601；目录日期段用本地 `YYYY-MM-DD`。

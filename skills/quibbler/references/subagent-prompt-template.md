@@ -78,7 +78,7 @@
 | `{material.scale}` | bytes / lines / words / duration_s 组装 | 无值的维度整项略去，不写 `null` |
 | `{material.entrypoints}` | MaterialProfile.entrypoints | 无则写「未探测到明确入口，请自行寻找」 |
 | `{access_note}` | 主 Agent 组装 | 本地路径 / URL / 需登录（凭据见第 8 段） |
-| `{access_status}` | **【v1.2】主 Agent 派发前按与用户的实际交互填** | 三值：`provided`（用户给了凭据）/ `refused`（**问过**且用户**明确拒绝**）/ `not_required`（素材本就不需要登录）。**同时写进 `meta.json`，T05 交叉核对。不许留空、不许猜** |
+| `{access_status}` | **【v1.2】主 Agent 派发前按与用户的实际交互填** | 三值：`granted`（用户给了凭据）/ `refused`（**问过**且用户**明确拒绝**）/ `unknown`（未涉及登录，或无法判定）。**同时写进 `meta.json`，T05 交叉核对。不许留空、不许猜** |
 | `{env.available}` | EnvProbe 中为 true 的项 | 逗号分隔 |
 | `{env.missing}` | EnvProbe.missing | 空数组时写「无」 |
 | `{env.forced_red_scopes}` | EnvProbe.forced_red_scopes | 空数组时整段写「本次无强制推演项」 |
@@ -245,7 +245,7 @@
 [ ] {role.cognitive_limits} 非空，且为**整块逐字注入**（未被摘要或改写）
 [ ] 「因为」句式的三条限定说明未被删减（只能接经历/不能接技术因果/说不出也合格）
 [ ] 「你不容退让的权利」段完整保留
-[ ] {access_status} 已填且 ∈ {provided, refused, not_required}，与 meta.json 一致
+[ ] {access_status} 已填且 ∈ {granted, refused, unknown}，与 meta.json 一致
 [ ] {env.forced_red_scopes} 为空时该段已改写为「本次无强制推演项」
 [ ] cause 四值表与两条反滥用红线（FALSE_ENV_EXCUSE / FALSE_ACCESS_EXCUSE）已保留
 [ ] 无凭据时 {credentials_block} 整段已删除
@@ -355,8 +355,8 @@ professional_core（保证技术/专业结论站得住脚。你说的每一句�
 （同 §3 原文，逐字照抄）
 
 # 证据落盘
-你的证据目录（**已建好，直接写，不要再 mkdir**）：
-C:\Users\reinh\WorkBuddy\proj\.workbuddy\quibbler-reports\my-repo-2026-08-07\evidence\A3
+你的证据目录（**已建好，直接写，不要再 mkdir**）：{evidence_dir}
+（形如 `<工作区>/.quibbler/reports/<repo>-<日期>/evidence/<ROLE_ID>`）
 命名规范：01-npm-install.log、02-readme-excerpt.txt、03-empty-arg.log …
 返回 JSON 里的 `artifact` 写相对路径：evidence/A3/01-npm-install.log
 【安全】凭据 / token / 密码绝不允许写入任何文件、日志或返回内容。
@@ -478,7 +478,7 @@ layman（你代表那些没有背景知识就撞上这东西的人。你看不�
 
 # 证据落盘
 你的证据目录：
-C:\Users\reinh\WorkBuddy\proj\.workbuddy\quibbler-reports\shop-618-2026-08-07\evidence\D1
+C:\path\to\project\.quibbler\reports\shop-618-2026-08-07\evidence\D1
 命名规范：01-first-screen.png、02-mobile-375.png、03-font-200.png …
 artifact 写相对路径：evidence/D1/01-first-screen.png
 【安全】不许真实提交任何个人信息。表单需要手机号时填 `13800000000`，
@@ -618,7 +618,7 @@ adversary（你的任务是预演「这东西发出去会被怎么骂」。找�
 
 # 证据落盘
 你的证据目录：
-C:\Users\reinh\WorkBuddy\proj\.workbuddy\quibbler-reports\新品发布-60s-2026-08-07\evidence\D6
+C:\path\to\project\.quibbler\reports\新品发布-60s-2026-08-07\evidence\D6
 命名规范：01-srt-fulltext.txt、02-claim-check.md、03-comment-preview.md …
 artifact 写相对路径：evidence/D6/01-srt-fulltext.txt
 【安全】不涉及凭据。若检索过程中出现任何账号信息，一律不写入文件。

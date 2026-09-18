@@ -57,7 +57,7 @@
 | `{{INSTALL_HINTS}}` | `winget install Gyan.FFmpeg` | `EnvProbe.install_hints`，多条换行缩进对齐 |
 | `{{AFFECTED_ROLES}}` | `C4 秦帧（纯推演）、C6 江分贝（纯推演）` / `无` | 因环境缺失而降级的角色 |
 | `{{COVERAGE}}` | `26/32` | `dxp-protocol.md` §5.3，分数形式，**不转百分比** |
-| `{{ISSUE_NO}}` | `007` | 扫 `.workbuddy/quibbler-reports/` 已有目录数 +1，三位补零 |
+| `{{ISSUE_NO}}` | `007` | 扫 `.quibbler/reports/` 已有目录数 +1，三位补零 |
 | `{{VERIFY_STATUS}}` | `通过` / `通过（2 项已修正）` | verify 退出码 |
 | `{{VERIFY_TIME}}` | `2026-08-07T22:14:03+08:00` | ISO 8601 |
 
@@ -84,7 +84,7 @@
 | `{{DEGRADATION_SUMMARY}}` | `无` 或 `视频抽帧未执行（本机无 ffmpeg）` | 降级原因一句话摘要，详情在末版 |
 | `{{HEADLINE}}` | `装得上，跑不起来，README 骗了所有人` | ≤30 字 |
 | `{{SUB_1}}` `{{SUB_2}}` `{{SUB_3}}` | 见 §4.1 | 每句含一个量化事实 |
-| `{{WORKSPACE_DIR}}` | `.workbuddy/quibbler-reports/my-repo-2026-08-07/` | 相对 cwd |
+| `{{WORKSPACE_DIR}}` | `.quibbler/reports/my-repo-2026-08-07/` | 相对 cwd |
 
 ---
 
@@ -440,7 +440,7 @@
 
 ---
 
-*产物落盘：`{{WORKSPACE_DIR}}`　|　证据索引：`evidence/INDEX.md`　|　建议将 `.workbuddy/` 加入 `.gitignore`*
+*产物落盘：`{{WORKSPACE_DIR}}`　|　证据索引：`evidence/INDEX.md`　|　建议将 `.quibbler/` 加入 `.gitignore`*
 *—— 《唱唱反调》编辑部　第 {{ISSUE_NO}} 期　{{REPORT_DATE}}*
 ```
 

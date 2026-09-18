@@ -21,8 +21,13 @@ import process from 'node:process';
 
 const SCHEMA_VERSION = '1.0';
 
-/** 报告根目录（相对 cwd），主理人决策 7。 */
-const REPORT_ROOT_SEGMENTS = ['.workbuddy', 'quibbler-reports'];
+/**
+ * 报告根目录（相对 cwd）。
+ * 2026-09-17 变更：原先把产物挂到宿主平台的数据目录下；改为 skill 自有目录 ——
+ * 报告是 skill 的产物，落在用户项目里应当自解释，不依赖宿主平台叫什么。
+ * 本变更取代「主理人决策 7」中关于目录位置的部分。（`--out` 仍可整目录覆盖。）
+ */
+const REPORT_ROOT_SEGMENTS = ['.quibbler', 'reports'];
 
 /** 角色 id 白名单模式：1–2 位大写字母 + 1–2 位数字。临时角色可用 X1/X2。 */
 const ROLE_ID_RE = /^[A-Z]{1,2}\d{1,2}$/;
@@ -99,12 +104,12 @@ function findGitRoot(startDir) {
 }
 
 /**
- * 检查仓库 .gitignore 是否已忽略 .workbuddy/。纯文本行匹配。
+ * 检查仓库 .gitignore 是否已忽略产物目录。纯文本行匹配。
  * @param {string|null} gitRoot
  */
 function checkGitignore(gitRoot) {
   if (!gitRoot) {
-    return { in_git_repo: false, workbuddy_ignored: false, hint: null };
+    return { in_git_repo: false, artifact_dir_ignored: false, hint: null };
   }
   const ignoreFile = path.join(gitRoot, '.gitignore');
   let ignored = false;
@@ -112,7 +117,7 @@ function checkGitignore(gitRoot) {
     const lines = fs.readFileSync(ignoreFile, 'utf8').split(/\r?\n/);
     ignored = lines.some((line) => {
       const t = line.trim().replace(/^\/+/, '').replace(/\/+$/, '');
-      return t === '.workbuddy' || t === '.workbuddy/**' || t === '.workbuddy/quibbler-reports';
+      return t === '.quibbler' || t === '.quibbler/**' || t === '.quibbler/reports';
     });
   } catch {
     ignored = false;
@@ -120,10 +125,10 @@ function checkGitignore(gitRoot) {
   return {
     in_git_repo: true,
     git_root: gitRoot,
-    workbuddy_ignored: ignored,
+    artifact_dir_ignored: ignored,
     hint: ignored
       ? null
-      : `检测到 ${gitRoot} 是 git 仓库，且 .gitignore 未忽略 .workbuddy/。建议手动追加一行 “.workbuddy/”，否则体验证据（截图/日志）会被提交。本脚本不会替你改文件。`,
+      : `检测到 ${gitRoot} 是 git 仓库，且 .gitignore 未忽略 .quibbler/。建议手动追加一行 “.quibbler/”，否则体验证据（截图/日志）会被提交。本脚本不会替你改文件。`,
   };
 }
 
@@ -146,7 +151,7 @@ function printHelp() {
       '  --types CODE,WEB    素材类型，写入 meta.json',
       '  --mode default|lite|full   本次运行模式，写入 meta.json',
       '  --cwd <目录>        工作目录基准，默认 process.cwd()',
-      '  --out <目录>        直接指定报告根目录，覆盖 {cwd}/.workbuddy/quibbler-reports',
+      '  --out <目录>        直接指定报告根目录，覆盖 {cwd}/.quibbler/reports',
       '  --reuse             同日同素材目录已存在时复用它，而不是追加 -2',
       '  --pretty            美化 JSON 输出',
       '  --help, -h          显示本帮助',
